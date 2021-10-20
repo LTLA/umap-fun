@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>title</title>
+    <script src="umaplib.js"></script>
+    <script>
+    Module.onRuntimeInitialized = () => {
+        // Populating with some random values.
+        let n = 500;
+        let d = 10;
+
+        let ptr = Module._malloc(8 * n * d);
+        var buffer = new Float64Array(Module.HEAPF64.buffer, ptr, n * d);
+        for (var i = 0; i < n * d; i++) {
+            buffer[i] = Math.random();
+        }
+
+        let out = Module._malloc(8 * 2 * n);
+        let init = Module.initialize_umap(ptr, d, n, 15, 500, 0.01, true, out);
+
+        console.log(new Float64Array(Module.HEAPF64.buffer, out, n * 2));
+        while (!Module.run_umap(init, out)) {}
+        console.log(new Float64Array(Module.HEAPF64.buffer, out, n * 2));
+    };
+    </script>
+  </head>
+  <body>
+    <!-- page content -->
+  </body>
+</html>
+
